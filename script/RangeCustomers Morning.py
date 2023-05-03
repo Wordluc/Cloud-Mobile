@@ -59,13 +59,16 @@ tedx_next = spark.read \
     .csv(tedx_dataset_next)
     
 tedx_next.printSchema()
-#Query for RangeCustomers
 
+
+
+
+
+#Query for RangeCustomers
 tags=["beauty","family","femminism","fashion","friendship","garden","health care","love","life","nature","parenting","relationship","women"]
 
 # Filter the id_tags DataFrame to only include rows with the "life" tag
 id_tags = tedx_tag.filter(col("tag").isin(tags)).select(col("idx")).distinct()
-
 
 # Join the tedx_dataset and id_tags DataFrames on the "idx" column, and filter to include only rows with the "life" tag
 tedx_dataset_agg = tedx_dataset.join(
@@ -78,6 +81,11 @@ tedx_dataset_agg = tedx_dataset.join(
 ).drop("idx","tag")
 
 
+
+
+
+
+# Link to MongoDB 
 mongo_uri = "mongodb+srv://cloud-db:giulia@cluster0.dwvyxyf.mongodb.net"
 print(mongo_uri)
 
