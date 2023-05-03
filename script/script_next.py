@@ -69,17 +69,15 @@ tedx_next.printSchema()
 
 
 
+
+
+# Query per WatchNext 
 tags_dataset_agg = tedx_tag.groupBy(col("idx")).agg(collect_list("tag").alias("tags"))
 tags_dataset_agg.printSchema()
 
-## READ WATCH NEXT DATASET
 
-#watch_next_dataset = watch_next_dataset.drop("url")
-###watch_next_dataset = watch_next_dataset.groupBy(col("idx").alias("idx_ref")).agg(array_distinct(collect_list("watch_next_idx")).alias("watch_next"))
 watch_next_dataset = tedx_next.groupBy(col("idx").alias("idx_ref")).agg(array_distinct(collect_list(col("watch_next_idx"))).alias("watch_next"))
 
-
-# AGGREGATE DATASETS
 tedx_dataset_agg = tedx_dataset.join(tags_dataset_agg, tedx_dataset.idx == tags_dataset_agg.idx, "left") \
     .drop(tedx_tag.idx) \
     .select(col("idx").alias("_id"), col("*")) \
@@ -87,16 +85,18 @@ tedx_dataset_agg = tedx_dataset.join(tags_dataset_agg, tedx_dataset.idx == tags_
 
 tedx_dataset_agg.printSchema()
 
-tedx_dataset_agg_2 = tedx_dataset_agg.join(watch_next_dataset, tedx_dataset_agg._id == watch_next_dataset.idx_ref, "left") \
+result = tedx_dataset_agg.join(watch_next_dataset, tedx_dataset_agg._id == watch_next_dataset.idx_ref, "left") \
     .drop(watch_next_dataset.idx_ref) \
     .select(col("_id"), col("*")) \
     
-tedx_dataset_agg_2.printSchema()
+result.printSchema()
 
 
 
 
 
+
+#Link to MongoDB 
 mongo_uri = "mongodb+srv://cloud-db:giulia@cluster0.dwvyxyf.mongodb.net"
 print(mongo_uri)
 
@@ -107,6 +107,6 @@ write_mongo_options = {
     "ssl": "true",
     "ssl.domain_match": "false"}
 from awsglue.dynamicframe import DynamicFrame
-tedx_dataset_dynamic_frame = DynamicFrame.fromDF(tedx_dataset_agg_2, glueContext, "nested")
+tedx_dataset_dynamic_frame = DynamicFrame.fromDF(result, glueContext, "nested")
 
 glueContext.write_dynamic_frame.from_options(tedx_dataset_dynamic_frame, connection_type="mongodb", connection_options=write_mongo_options)
