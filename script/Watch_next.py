@@ -61,11 +61,11 @@ tedx_next = spark.read \
 tedx_next.printSchema()
 
 #### FILTER ITEMS WITH NULL POSTING KEY
-##count_items = tedx_dataset.count()
-##count_items_null = tedx_dataset.filter("idx is not null").count()
+count_items = tedx_dataset.count()
+count_items_null = tedx_dataset.filter("idx is not null").count()
 
-##print(f"Number of items from RAW DATA {count_items}")
-##print(f"Number of items from RAW DATA with NOT NULL KEY {count_items_null}")
+print(f"Number of items from RAW DATA {count_items}")
+print(f"Number of items from RAW DATA with NOT NULL KEY {count_items_null}")
 
 
 
@@ -76,7 +76,7 @@ tags_dataset_agg = tedx_tag.groupBy(col("idx")).agg(collect_list("tag").alias("t
 tags_dataset_agg.printSchema()
 
 
-watch_next_dataset = tedx_next.groupBy(col("idx").alias("idx_ref")).agg(array_distinct(collect_list(col("watch_next_idx"))).alias("watch_next"))
+watch_next_dataset = tedx_next.groupBy(col("idx").alias("idx_ref")).agg(array_distinct(collect_list(col("url"))).alias("watch_next_url"))
 
 tedx_dataset_agg = tedx_dataset.join(tags_dataset_agg, tedx_dataset.idx == tags_dataset_agg.idx, "left") \
     .drop(tedx_tag.idx) \
