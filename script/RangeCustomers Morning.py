@@ -92,7 +92,7 @@ print(mongo_uri)
 write_mongo_options = {
     "uri": mongo_uri,
     "database": "cloud-db",
-    "collection": "ted_in_fila",
+    "collection": "ted_in_fila_morning",
     "ssl": "true",
     "ssl.domain_match": "false",
     "deleteBeforeInsert": "true"
