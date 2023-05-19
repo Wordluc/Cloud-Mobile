@@ -1,0 +1,8 @@
+
+const fila_afternoon = new mongoose.Schema({
+    title: String,
+    url: String,
+    details: String,
+}, { collection: 'ted_in_fila_afternoon' });
+
+module.exports = mongoose.model('fila_afternoon', fila_afternoon);
